@@ -4,7 +4,7 @@
    pix      chave Pix (Apoie, com botão de copiar)
    pixNome  nome que aparece para quem paga (opcional)            */
 window.NC = {
-  email: "arisnaldo@alu.ufc.br",
+  email: "contato@nightclass.com.br",
   nome: "Arisnaldo Rodrigues de Lima",
   pix: "046a23a5-78f4-4d10-b8cb-b52071e6b1e5",
   pixNome: "Arisnaldo Rodrigues de Lima"
