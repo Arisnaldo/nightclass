@@ -200,7 +200,8 @@ function home(){
   h+='<section class="hero rise"><p class="kicker">Inglês · do zero</p>'+
     '<h1>Comece pelo básico. Termine <em>montando frases</em>.</h1>'+
     '<p class="lede">Palavras com imagem, sequências para escrever e frases para completar. Uma lição por vez, no seu ritmo.</p>'+
-    (nx?'<button class="cta" data-start="'+nx.id+'">Continuar: '+esc(nx.title)+'</button>':'<p class="kicker" style="color:var(--good)">Você fechou todas as lições. Refaça quando quiser.</p>')+
+    '<div class="hero-actions">'+(nx?'<button class="cta" data-start="'+nx.id+'">'+(Object.keys(S.done).length?'Continuar':'Começar')+': '+esc(nx.title)+'</button>':'<p class="kicker" style="color:var(--good)">Você fechou todas as lições. Refaça quando quiser.</p>')+
+    '<a class="cta apoiar-btn" href="doar.html">Apoiar</a>'+
     '<p class="saved">Seu progresso fica salvo só neste aparelho e neste navegador.</p>'+
     '</section>';
   if(nx)openLv[nx.level]=true;

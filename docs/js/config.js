@@ -6,6 +6,6 @@
 window.NC = {
   email: "contato@nightclass.com.br",
   nome: "Arisnaldo Rodrigues de Lima",
-  pix: "046a23a5-78f4-4d10-b8cb-b52071e6b1e5",
+  pix: "d7dd6159-e091-4502-9798-2c79ad1f5507",
   pixNome: "Arisnaldo Rodrigues de Lima"
 };

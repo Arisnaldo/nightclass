@@ -216,3 +216,6 @@ button{font-family:inherit;color:inherit}
   .stage{height:180px}
   .top{flex-wrap:wrap}
 }
+
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.apoiar-btn{display:inline-block;text-decoration:none}
