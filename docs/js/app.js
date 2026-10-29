@@ -27,13 +27,71 @@ function vis(w){return w.num?'<span class="nm">'+w.e+'</span>':(w.e?w.e:'<span c
 
 /* ---------- storage ---------- */
 var KEY='nightclass-v1';
-function fresh(){return {done:{},open:{},xp:0,streak:0,last:'',mute:false}}
+function fresh(){return {done:{},open:{},xp:0,streak:0,last:'',mute:false,err:{}}}
 function load(){
   try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);var f=fresh();for(var k in f){if(o&&o[k]!==undefined)f[k]=o[k]}return f}}catch(e){}
   return fresh();
 }
 var S=load();
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+/* ---------- revisão de erros ---------- */
+function errKey(q){
+  if(q.ek)return q.ek;
+  return q.word?('w:'+q.word.en):('i:'+sess.L.id+':'+(q.t==='order'?q.words.join(' '):q.pre+'|'+q.answer));
+}
+function recWord(w){
+  if(!S.err)S.err={};
+  var k='w:'+w.en,o=S.err[k]||{w:w,n:0};o.n++;S.err[k]=o;save();
+}
+function recItem(q){
+  if(!S.err)S.err={};
+  var k=errKey(q),c=Object.assign({},q);delete c.retried;delete c.ek;
+  var o=S.err[k]||{q:c,n:0};o.n++;S.err[k]=o;save();
+}
+function errCount(){return S.err?Object.keys(S.err).length:0}
+
+/* ---------- modo misturado (prévia) ---------- */
+var MIX_MIN=10;   /* lições concluídas para liberar */
+var MIX_SIZE=12;  /* exercícios por rodada */
+var MIX_FORCE=/[?&]mix\b/.test(location.search); /* PRÉVIA: abra o site com ?mix para testar sem desbloquear. Apague esta linha e o "||MIX_FORCE" quando terminar. */
+function startMix(){
+  var ls=LESSONS.filter(function(L){return S.done[L.id]});
+  if(ls.length<MIX_MIN&&!MIX_FORCE)return;
+  if(!ls.length)ls=LESSONS.slice(0,5);
+  var order=shuffle(ls),queue=[];
+  for(var i=0;i<MIX_SIZE;i++){
+    var L=order[i%order.length],q;
+    if(L.gen||L.kind==='words'){
+      var ws=L.gen==='numbers'?genNumbers():L.words,w=rand(ws);
+      q={t:(w.e&&Math.random()<0.6)?'pick':'see',word:w,pool:ws.filter(function(x){return !!x.e===!!w.e})};
+    }else{
+      q=Object.assign({},rand(L.items));
+      q.ek='i:'+L.id+':'+(q.t==='order'?q.words.join(' '):q.pre+'|'+q.answer);
+    }
+    queue.push(q);
+  }
+  sess={L:{id:'mix',title:'Modo misturado',kind:'mix',words:[]},mix:true,phase:'quiz',li:0,queue:queue,qi:0,base:queue.length,mistakes:0,firstTry:0,xp:0,answered:false,hinted:false,sel:null,bank:[],ans:[],opts:[]};
+  renderQ();
+}
+function startReview(){
+  var keys=Object.keys(S.err||{});if(!keys.length)return;
+  keys=shuffle(keys).sort(function(a,b){return S.err[b].n-S.err[a].n}).slice(0,10);
+  var queue=[],pool=[];
+  keys.forEach(function(k,i){
+    var o=S.err[k];
+    if(o.w){
+      if(o.w.e)pool.push(o.w);
+      queue.push({t:(o.w.e&&i%2===0)?'pick':'see',word:o.w,ek:k});
+    }else if(o.q){var c=Object.assign({},o.q);c.ek=k;queue.push(c)}
+  });
+  var all=[];
+  LESSONS.forEach(function(L){if(L.kind==='words'&&L.words)L.words.forEach(function(w){if(w.e&&!w.num)all.push(w)})});
+  shuffle(all).forEach(function(w){if(pool.length<8&&!pool.some(function(p){return p.en===w.en}))pool.push(w)});
+  queue=shuffle(queue);
+  sess={L:{id:'review',title:'Revisão de erros',kind:'words',words:pool},review:true,phase:'quiz',li:0,queue:queue,qi:0,base:queue.length,mistakes:0,firstTry:0,xp:0,answered:false,hinted:false,sel:null,bank:[],ans:[],opts:[]};
+  renderQ();
+}
 function dayStr(d){return d.toLocaleDateString('en-CA')}
 function liveStreak(){
   if(!S.last)return 0;
@@ -201,9 +259,14 @@ function home(){
     '<h1>Comece pelo básico. Termine <em>montando frases</em>.</h1>'+
     '<p class="lede">Palavras com imagem, sequências para escrever e frases para completar. Uma lição por vez, no seu ritmo.</p>'+
     '<div class="hero-actions">'+(nx?'<button class="cta" data-start="'+nx.id+'">'+(Object.keys(S.done).length?'Continuar':'Começar')+': '+esc(nx.title)+'</button>':'<p class="kicker" style="color:var(--good)">Você fechou todas as lições. Refaça quando quiser.</p>')+
-    '<a class="cta apoiar-btn" href="doar.html">Apoiar</a>'+
+    '<a class="cta apoiar-btn" href="doar.html">Apoiar</a></div>'+
     '<p class="saved">Seu progresso fica salvo só neste aparelho e neste navegador.</p>'+
     '</section>';
+  var ne=errCount();
+  if(ne)h+='<section class="review"><div><h2>Revisão de erros</h2><p>'+ne+(ne===1?' item para rever':' itens para rever')+'</p></div><button class="cta" data-act="review">Revisar</button></section>';
+  var nd=Object.keys(S.done).length;
+  if(nd>=MIX_MIN||MIX_FORCE)h+='<section class="review"><div><h2>Modo misturado</h2><p>'+MIX_SIZE+' exercícios de lições que você já fez</p></div><button class="cta" data-act="mix">Misturar</button></section>';
+  else h+='<section class="review lock"><div><h2>'+ICONS.lock+'Modo misturado</h2><p>Conclua '+MIX_MIN+' lições para liberar · '+nd+'/'+MIX_MIN+'</p></div></section>';
   if(nx)openLv[nx.level]=true;
   LEVELS.forEach(function(lv){
     var ids=[],doneN=0;
@@ -277,7 +340,7 @@ function renderQ(){
       '<p class="hintline mono" id="hintline" aria-live="polite"></p>'+
       '<div class="actions"><button class="ghost" data-act="hint">Dica</button><button class="cta" data-act="check">Verificar</button></div>';
   }else if(q.t==='pick'){
-    var others=shuffle(L.words.filter(function(x){return x.en!==q.word.en})).slice(0,3);
+    var others=shuffle((q.pool||L.words).filter(function(x){return x.en!==q.word.en})).slice(0,3);
     sess.opts=shuffle([q.word].concat(others));
     b='<p class="kicker">'+(q.word.e?'Qual imagem combina com a palavra?':'Qual é a tradução?')+'</p>'+
       '<div class="center"><button class="say" data-act="say" aria-label="Ouvir"><span class="en">'+esc(q.word.en)+'</span>'+ICONS.speaker+'</button></div>'+
@@ -334,10 +397,12 @@ function conclude(ok,msg){
   var q=cur();sess.answered=true;
   if(ok){
     if(!q.retried){sess.firstTry++;sess.xp+=sess.hinted?5:10}else sess.xp+=3;
+    if(sess.review&&!q.retried&&S.err){delete S.err[errKey(q)];save()}
     chime();
   }else{
     buzz();
     sess.mistakes++;
+    if(q.t!=='seq'){if(q.word)recWord(q.word);else if(q.t==='fill'||q.t==='order')recItem(q)}
     if(!q.retried)sess.queue.push(Object.assign({},q,{retried:true}));
   }
   showFb(ok,msg);
@@ -354,7 +419,7 @@ function check(){
     var ins=$$('.seq-in');
     if(ins.some(function(i){return !norm(i.value)})){var e=ins.filter(function(i){return !norm(i.value)})[0];shakeEl(e);e.focus();return}
     ok=true;
-    ins.forEach(function(i,k){var good=norm(i.value)===norm(q.words[k].en);if(!good)ok=false;i.classList.add(good?'ok':'bad');i.readOnly=true});
+    ins.forEach(function(i,k){var good=norm(i.value)===norm(q.words[k].en);if(!good){ok=false;recWord(q.words[k])}i.classList.add(good?'ok':'bad');i.readOnly=true});
     msg=q.words.map(function(w){return w.en}).join(' · ');
   }else if(q.t==='fill'&&q.mode==='type'){
     var bi=$('#ans'),bv=norm(bi.value);
@@ -387,15 +452,15 @@ function hint(){
   else if(q.t==='fill'){el.textContent=q.answer.length+' letras · começa com "'+q.answer[0]+'"'}
 }
 function finish(){
-  var L=sess.L,total=sess.base;
+  var L=sess.L,total=sess.base,rv=!!(sess.review||sess.mix);
   var mistakes=sess.mistakes,n=mistakes===0?3:(mistakes<=2?2:1);
   var gain=sess.xp+20;
-  S.xp+=gain;S.done[L.id]=Math.max(S.done[L.id]||0,n);bumpStreak();save();
-  var nxI=idx(L.id)+1,nx=LESSONS[nxI];
-  var titles=['Lição concluída','Muito bem','Lição perfeita'];
+  S.xp+=gain;if(!rv)S.done[L.id]=Math.max(S.done[L.id]||0,n);bumpStreak();save();
+  var nxI=idx(L.id)+1,nx=rv?null:LESSONS[nxI];
+  var titles=sess.mix?['Mistura concluída','Mistura concluída','Mistura perfeita']:rv?['Revisão concluída','Revisão concluída','Revisão perfeita']:['Lição concluída','Muito bem','Lição perfeita'];
   app.innerHTML=topbar(1,'fim')+
    '<section class="result"><p class="kicker">'+esc(L.title)+'</p><div class="bigstars" aria-label="'+n+' de 3 estrelas">'+stars(n)+'</div>'+
-   '<h2>'+titles[n-1]+'</h2>'+
+   '<h2>'+titles[n-1]+'</h2>'+(sess.review?'<p class="lede">'+(errCount()?'Ainda faltam '+errCount()+' para rever. Volte quando quiser.':'Você acertou tudo o que estava na lista.')+'</p>':'')+
    '<div class="tiles"><div><b>+'+gain+'</b><span>XP</span></div><div><b>'+sess.firstTry+'/'+total+'</b><span>de primeira</span></div><div><b>'+liveStreak()+'</b><span>dias seguidos</span></div></div>'+
    '<div class="actions">'+(nx?'<button class="cta" data-start="'+nx.id+'">Próxima: '+esc(nx.title)+'</button>':'')+
    '<button class="ghost" data-act="exit">Voltar ao mapa</button></div></section>';
@@ -423,6 +488,8 @@ app.addEventListener('click',function(e){
   if(act==='reset-no'){$('#resetbox').innerHTML=resetHtml(false);return}
   if(act==='reset-yes'){var m=S.mute;S=fresh();S.mute=m;save();openLv={};justReset=true;home();return}
   if(act==='snd'){S.mute=!S.mute;save();b.innerHTML=sndLabel();b.setAttribute('aria-pressed',S.mute?'false':'true');if(!S.mute)chime();return}
+  if(act==='review'){startReview();return}
+  if(act==='mix'){startMix();return}
   if(!sess)return;
   if(act==='say'){
     if(sess.phase==='learn')say(sess.L.words[sess.li].en);
