@@ -229,3 +229,10 @@ button{font-family:inherit;color:inherit}
 .arcade-btn{display:inline-flex;align-items:center;gap:9px;text-decoration:none;color:var(--fg);padding:14px 20px;font:600 16px var(--body);border-color:rgba(244,184,96,.4)}
 .arcade-btn:hover{border-color:var(--accent)}
 .arcade-btn b{font:500 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;background:var(--accent);color:var(--accent-ink);padding:4px 6px;border-radius:5px;transform:rotate(-5deg)}
+/* botão Arcade (beta) ao lado do Apoiar */
+.arcade-btn{display:inline-flex;align-items:center;gap:9px;text-decoration:none;color:var(--fg);padding:14px 20px;font:600 16px var(--body);border-color:rgba(244,184,96,.4)}
+.arcade-btn{animation:arcade-bob 2.6s ease-in-out infinite}
+.arcade-btn:hover{border-color:var(--accent);animation-play-state:paused}
+@keyframes arcade-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@media (prefers-reduced-motion:reduce){.arcade-btn{animation:none}}
+.arcade-btn b{font:500 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;background:var(--accent);color:var(--accent-ink);padding:4px 6px;border-radius:5px;transform:rotate(-5deg)}
