@@ -1,0 +1,77 @@
+/* Nightclass Arcade (beta). Usa as cores e fontes do site (css/app.css); tudo com prefixo ax- para não colidir. */
+.ax{--px:'Press Start 2P',ui-monospace,'Courier New',monospace;--gold:var(--accent)}
+.ax h1{font:800 clamp(30px,6.4vw,48px)/1.06 var(--display);letter-spacing:-.03em;margin:0 0 14px;text-wrap:balance}
+.ax h1 em{font-style:normal;color:var(--accent)}
+.ax > :where(:not(.top):not(.foot)){max-width:560px;margin-left:auto;margin-right:auto}
+.ax-hero{padding:4px 0 24px;text-align:center}
+.ax-hero .kicker{display:flex;align-items:center;justify-content:center;gap:10px}
+.ax-hero .lede{margin:0 auto}
+a.brand{color:inherit;text-decoration:none}
+.ax-back{font:500 13px var(--mono);color:var(--muted);text-decoration:none;white-space:nowrap}
+.ax-back:hover{color:var(--fg);text-decoration:underline}
+
+/* selo beta */
+.ax-beta{display:inline-block;font:400 8px/1 var(--px);letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);background:var(--accent);padding:4px 5px 3px;border-radius:4px;transform:rotate(-5deg)}
+
+/* abas */
+.ax-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.ax-tab{font:600 14px var(--body);color:var(--muted);background:var(--surface);border:1px solid var(--line);padding:12px 8px;border-radius:12px;cursor:pointer;transition:border-color .2s,color .2s}
+.ax-tab:hover{border-color:#2a3042;color:var(--fg)}
+.ax-tab[aria-selected="true"]{color:var(--accent-ink);background:var(--accent);border-color:var(--accent)}
+
+.ax-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.ax-pool{font:400 12px var(--mono);color:var(--muted)}
+
+/* botões */
+.ax-btn{font:600 14px var(--body);color:var(--fg);background:var(--surface-2);border:1px solid var(--line);padding:10px 14px;border-radius:10px;cursor:pointer;transition:border-color .2s,background .2s,transform .15s}
+.ax-btn:hover{border-color:#2a3042;background:var(--surface)}
+.ax-btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.ax-btn.primary:hover{box-shadow:0 10px 34px -10px rgba(244,184,96,.7);transform:translateY(-1px)}
+.ax-tab:focus-visible,.ax-btn:focus-visible,.ax-crate:focus-visible,.ax-input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* grade 3x3 de caixas */
+.ax-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;max-width:420px}
+.ax-crate{position:relative;border:0;padding:6px;cursor:pointer;background:none;border-radius:10px;display:grid;place-items:center;transition:transform .1s,opacity .2s,filter .2s,background .2s}
+.ax-crate img{width:100%;height:auto;image-rendering:pixelated;display:block;pointer-events:none}
+.ax-crate:hover{filter:brightness(1.12)}
+.ax-crate:active{transform:translateY(3px)}
+.ax-crate.is-on{transform:translateY(-3px);background:var(--accent-soft);box-shadow:0 0 0 2px var(--accent);filter:drop-shadow(0 0 8px rgba(244,184,96,.5))}
+.ax-crate.is-seen::after{content:"\2713";position:absolute;right:2px;top:0;font:700 12px/17px var(--body);color:var(--accent-ink);background:var(--good);width:17px;height:17px;border-radius:50%;text-align:center;z-index:2}
+.ax-grid.is-locked .ax-crate{pointer-events:none;opacity:.38;filter:saturate(.5)}
+.ax-grid.is-locked .ax-crate.is-on{opacity:1;filter:none}
+
+/* painéis */
+.ax-panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.ax-panel[hidden],.ax-stack[hidden]{display:none}
+.ax-stack{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ax-p{margin:0;color:var(--fg)}
+.ax-label{font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.ax-word{font:400 clamp(15px,4.4vw,21px)/1.5 var(--px);color:var(--fg);min-height:3em;overflow-wrap:anywhere}
+.ax-ch{color:var(--accent)}
+.ax-pt{font:700 18px var(--display)}
+.ax-ph{color:var(--muted);font-size:14px}
+.ax-row{display:flex;flex-wrap:wrap;gap:8px}
+.ax-progress{font-size:13px;color:var(--muted)}
+.ax-note{font-size:12.5px;color:var(--muted);margin:0}
+.ax-note:empty{display:none}
+.ax-stats{display:flex;flex-wrap:wrap;gap:18px;font-size:13px;color:var(--muted)}
+.ax-stats b{color:var(--fg);font:400 12px var(--px)}
+.ax-big{font:400 clamp(20px,6vw,28px)/1.3 var(--px);color:var(--accent);margin:0}
+
+/* escrever de ouvido */
+.ax-slots{display:flex;flex-wrap:wrap;gap:5px;row-gap:8px}
+.ax-slot{width:24px;height:32px;display:grid;place-items:center;font:400 13px var(--px);background:var(--bg);border-bottom:3px solid var(--line);text-transform:uppercase}
+.ax-slot.is-gap{width:12px;background:none;border:0}
+.ax-slot.is-hint{color:var(--muted)}
+.ax-slot.is-ok{color:var(--good);border-color:var(--good)}
+.ax-slot.is-bad{color:var(--bad);border-color:var(--bad)}
+.ax-slot.is-rev{color:var(--accent);border-color:var(--accent)}
+.ax-slots.is-shake{animation:ax-shake .3s}
+@keyframes ax-shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.ax-input{font:500 17px var(--body);width:100%;padding:12px 14px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:10px}
+.ax-msg{min-height:1.5em;font-weight:600}
+.ax-msg.good{color:var(--good)}
+.ax-msg.bad{color:var(--bad)}
+
+@media (prefers-reduced-motion:reduce){.ax-slots.is-shake{animation:none}.ax-crate{transition:none}}
+@media (max-width:420px){.ax-back{font-size:12px}}

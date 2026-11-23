@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nightclass Arcade: aprenda inglês com games</title>
+<meta name="description" content="Beta do Nightclass Arcade: ouça o nome da arma, veja como se escreve e depois escreva só de ouvido. Inglês com games, de graça.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" href="img/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#05060a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/aviso.css">
+<link rel="stylesheet" href="css/arcade.css">
+</head>
+<body>
+<div class="shell ax" id="arcade">
+  <header class="top">
+    <a class="brand" href="index.html"><i></i>Nightclass</a>
+    <a class="ax-back" href="index.html">← Voltar às lições</a>
+  </header>
+
+  <section class="ax-hero">
+    <p class="kicker">Arcade <span class="ax-beta">beta</span></p>
+    <h1>Pegue a arma, <em>aprenda a palavra</em></h1>
+    <p class="lede">Aprenda inglês com games. Ouça a voz, veja como se escreve e depois escreva só de ouvido.</p>
+  </section>
+
+  <div class="ax-tabs" role="tablist" aria-label="Modo de treino">
+    <button class="ax-tab" role="tab" id="tab-learn" aria-selected="true">1 · Ouvir e ver</button>
+    <button class="ax-tab" role="tab" id="tab-train" aria-selected="false">2 · Ouvir e escrever</button>
+  </div>
+
+  <div class="ax-toolbar"><span class="ax-pool" id="pool"></span><button class="ax-btn" id="reshuffle" type="button">🔀 Embaralhar armas</button></div>
+
+  <div class="ax-grid" id="grid" aria-label="Caixas de armas"></div>
+
+  <section class="ax-panel" id="learn">
+    <div class="ax-label">Toque numa caixa</div>
+    <div class="ax-word" id="lw" aria-live="polite"></div>
+    <div><div class="ax-pt" id="lpt"></div><div class="ax-ph" id="lph"></div></div>
+    <div class="ax-row">
+      <button class="ax-btn primary" id="lplay">▶ Ouvir</button>
+      <button class="ax-btn" id="lslow">🐢 Devagar</button>
+    </div>
+    <div class="ax-progress" id="lprog"></div>
+    <p class="ax-note" id="voicenote"></p>
+  </section>
+
+  <section class="ax-panel" id="train" hidden>
+    <div id="tstart" class="ax-stack">
+      <div class="ax-label">Missão</div>
+      <p class="ax-p">Você vai ouvir a voz e ver a caixa com a letra da arma. Escreva o nome em inglês. São 9 armas.</p>
+      <div><button class="ax-btn primary" id="tgo">Começar missão</button></div>
+      <div class="ax-progress" id="tbest"></div>
+    </div>
+
+    <div id="tplay" class="ax-stack" hidden>
+      <div class="ax-stats"><span>Arma <b id="tn">1/9</b></span><span>Pontos <b id="tp">0</b></span></div>
+      <div class="ax-label">Escreva o que você ouviu</div>
+      <div class="ax-slots" id="slots"></div>
+      <input class="ax-input" id="ans" type="text" maxlength="30" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Digite aqui" aria-label="Resposta">
+      <div class="ax-msg" id="msg" aria-live="polite"></div>
+      <div class="ax-row">
+        <button class="ax-btn primary" id="tcheck">Verificar</button>
+        <button class="ax-btn" id="tplayb">▶ Ouvir</button>
+        <button class="ax-btn" id="tslow">🐢 Devagar</button>
+        <button class="ax-btn" id="thint">💡 Dica</button>
+        <button class="ax-btn" id="tshow">Mostrar resposta</button>
+      </div>
+    </div>
+
+    <div id="tend" class="ax-stack" hidden>
+      <div class="ax-label">Missão cumprida</div>
+      <p class="ax-big" id="tscore"></p>
+      <p class="ax-p" id="tsum"></p>
+      <div><button class="ax-btn primary" id="tagain">Jogar de novo</button></div>
+    </div>
+  </section>
+
+  <footer class="foot"><nav aria-label="Páginas do site"><a href="index.html">Início</a><a href="como-funciona.html">Como funciona</a><a href="blog.html">Blog</a><a href="sobre.html">Sobre</a><a href="contato.html">Contato</a><a href="privacidade.html">Privacidade</a><a href="doar.html" class="apoie">Apoie o projeto</a></nav><p class="mono">Arcade em teste. Ícones e falas de Metal Slug © SNK, usados só neste beta.</p></footer>
+</div>
+<script src="js/arcade.js"></script>
+<script src="js/aviso.js" data-privacy="privacidade.html"></script>
+</body>
+</html>

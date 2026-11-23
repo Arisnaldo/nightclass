@@ -259,7 +259,8 @@ function home(){
     '<h1>Comece pelo básico. Termine <em>montando frases</em>.</h1>'+
     '<p class="lede">Palavras com imagem, sequências para escrever e frases para completar. Uma lição por vez, no seu ritmo.</p>'+
     '<div class="hero-actions">'+(nx?'<button class="cta" data-start="'+nx.id+'">'+(Object.keys(S.done).length?'Continuar':'Começar')+': '+esc(nx.title)+'</button>':'<p class="kicker" style="color:var(--good)">Você fechou todas as lições. Refaça quando quiser.</p>')+
-    '<a class="cta apoiar-btn" href="doar.html">Apoiar</a></div>'+
+    '<a class="cta apoiar-btn" href="doar.html">Apoiar</a>'+
+    '<a class="ghost arcade-btn" href="arcade.html" aria-label="Arcade, versão beta: aprender inglês com games">Arcade <b>beta</b></a></div>'+
     '<p class="saved">Seu progresso fica salvo só neste aparelho e neste navegador.</p>'+
     '</section>';
   var ne=errCount();
